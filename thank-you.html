@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Protocol Initiated. Your transmission has been received by VANGUARD Legal Group."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>VANGUARD | Protocol Initiated</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="css/fonts.css" />
+    <link rel="stylesheet" href="css/lenis.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Page Transition Overlay -->
+    <div class="page-transition" id="page-transition"></div>
+
+    <div class="noise"></div>
+
+    <nav class="nav" id="nav">
+      <a
+        href="index.html"
+        class="nav__logo"
+        style="text-decoration: none; color: inherit"
+        >VANGUARD</a
+      >
+      <div class="nav__links">
+        <a href="about.html" class="nav__link">THE FIRM</a>
+        <a href="services.html" class="nav__link">PRACTICE</a>
+        <a href="cases.html" class="nav__link">EVIDENCE</a>
+        <a href="contact.html" class="nav__link">CONTACT</a>
+      </div>
+      <div class="nav__menu-btn" id="menuBtn">MENU</div>
+    </nav>
+
+    <main>
+      <section class="hero" data-scroll-section>
+        <div class="hero__content">
+          <h1
+            class="hero__title"
+            style="font-size: clamp(3rem, 8vw, 10rem); display: block"
+          >
+            <div style="overflow: hidden">
+              <span class="reveal-text">PROTOCOL</span>
+            </div>
+            <div style="overflow: hidden">
+              <span class="reveal-text" style="color: var(--accent-color)"
+                >INITIATED</span
+              >
+            </div>
+          </h1>
+          <div class="hero__subtitle" style="opacity: 1; margin-top: 3rem">
+            <span>TRANSMISSION RECEIVED.</span>
+            <span>WE WILL MAKE CONTACT SHORTLY.</span>
+          </div>
+          <a
+            href="index.html"
+            class="form-btn"
+            style="
+              margin-top: 4rem;
+              display: inline-block;
+              text-decoration: none;
+            "
+            >RETURN TO BASE</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <script src="js/gsap.min.js" defer></script>
+    <script src="js/ScrollTrigger.min.js" defer></script>
+    <script src="js/lenis.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/theme-switcher.js" defer></script>
+    <script defer>
+      // Specific animation for thank you page
+      document.addEventListener("DOMContentLoaded", () => {
+        gsap.from(".reveal-text", {
+          y: "100%",
+          duration: 1.5,
+          stagger: 0.2,
+          ease: "power4.out",
+          delay: 0.5,
+        });
+      });
+    </script>
+  </body>
+</html>
