@@ -1088,8 +1088,8 @@
         font-family: var(--font-sans);
         font-size: clamp(2rem, 5vw, 4rem);
         font-weight: 700;
+        font-variant-numeric: tabular-nums;
       }
-
       .stat-label {
         font-family: var(--font-serif);
         font-size: 0.9rem;
@@ -1922,6 +1922,8 @@
         <div class="portrait-split__visual">
           <img
             src="assets/images/hero-portrait.jpg"
+            srcset="assets/images/hero-portrait-400.jpg 400w, assets/images/hero-portrait-800.jpg 800w, assets/images/hero-portrait.jpg 1887w"
+            sizes="(max-width: 768px) 90vw, 50vw"
             alt="Alexander Vanguard, Founding Partner"
             class="portrait-split__img"
             loading="eager"

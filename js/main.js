@@ -9,13 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Animate IN (Reveal Page)
   if (transitionOverlay) {
-    gsap.to(transitionOverlay, {
-      scaleY: 0,
-      transformOrigin: "top",
-      duration: 1.2,
-      ease: "power4.inOut",
-      delay: 0.2,
-    });
+    gsap.fromTo(
+      transitionOverlay,
+      { scaleY: 1 },
+      {
+        scaleY: 0,
+        transformOrigin: "top",
+        duration: 1.2,
+        ease: "power4.inOut",
+        delay: 0.2,
+      }
+    );
   }
 
   // Handle Links (Animate OUT)
@@ -31,14 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         gsap.set(transitionOverlay, { transformOrigin: "bottom" });
-        gsap.to(transitionOverlay, {
-          scaleY: 1,
-          duration: 1,
-          ease: "power4.inOut",
-          onComplete: () => {
-            window.location.href = href;
-          },
-        });
+        gsap.fromTo(
+          transitionOverlay,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            duration: 1,
+            ease: "power4.inOut",
+            onComplete: () => {
+              window.location.href = href;
+            },
+          }
+        );
       }
     });
   });
