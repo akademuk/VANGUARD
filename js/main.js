@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           if (expertiseProgressBar) {
-            expertiseProgressBar.style.width = `${self.progress * 100}%`;
+            expertiseProgressBar.style.transform = `scaleX(${self.progress})`;
           }
         },
       },

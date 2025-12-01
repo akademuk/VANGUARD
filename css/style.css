@@ -805,8 +805,11 @@ body {
 
 .expertise__progress-bar {
   height: 100%;
-  width: 0;
+  width: 100%;
   background: var(--accent-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
 }
 
 .expertise__wrapper {
