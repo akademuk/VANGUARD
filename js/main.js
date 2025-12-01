@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- 8. STATS COUNTER ---
   const statVals = document.querySelectorAll(".stat-val");
   statVals.forEach((stat) => {
-    const rawText = stat.innerText;
+    const rawText = stat.textContent;
     // Regex to separate prefix, number, suffix
     // Matches: (non-digits)(digits)(non-digits)
     const match = rawText.match(/^([^0-9]*)([0-9]+)(.*)$/);
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const suffix = match[3] || "";
 
       // Set initial value to 0 (preserving formatting)
-      stat.innerText = `${prefix}0${suffix}`;
+      stat.textContent = `${prefix}0${suffix}`;
 
       const counter = { val: 0 };
 
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
           once: true, // Run only once
         },
         onUpdate: () => {
-          stat.innerText = `${prefix}${Math.floor(counter.val)}${suffix}`;
+          stat.textContent = `${prefix}${Math.floor(counter.val)}${suffix}`;
         },
       });
     }
@@ -227,12 +227,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const nav = document.getElementById("nav");
 
   if (nav) {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 50) {
-        nav.classList.add("scrolled");
-      } else {
-        nav.classList.remove("scrolled");
-      }
+    ScrollTrigger.create({
+      start: "top -50",
+      end: 99999,
+      toggleClass: { className: "scrolled", targets: nav },
     });
   }
 
