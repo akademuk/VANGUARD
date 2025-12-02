@@ -63,15 +63,20 @@ document.addEventListener("DOMContentLoaded", () => {
     touchMultiplier: 2,
   });
 
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
+  // Synchronize Lenis with GSAP ScrollTrigger
+  lenis.on("scroll", ScrollTrigger.update);
 
-  requestAnimationFrame(raf);
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
 
   // Connect Lenis to ScrollTrigger
   gsap.registerPlugin(ScrollTrigger);
+
+  // Use matchMedia for responsive animations
+  let mm = gsap.matchMedia();
 
   // --- 3. HERO REVEAL ---
   const heroTl = gsap.timeline();
@@ -100,13 +105,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const expertiseProgressBar = document.getElementById("expertiseProgressBar");
 
   if (expertiseSection && expertiseWrapper) {
+    // Optimization: Hint browser about changes
+    expertiseWrapper.style.willChange = "transform";
+
     gsap.to(expertiseWrapper, {
       x: () => -(expertiseWrapper.scrollWidth - window.innerWidth),
       ease: "none",
       scrollTrigger: {
         trigger: expertiseSection,
         start: "top top",
-        end: () => "+=1500",
+        end: () => "+=" + expertiseWrapper.scrollWidth, // Dynamic end based on content width
         scrub: 1,
         pin: true,
         invalidateOnRefresh: true,
@@ -141,94 +149,99 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- 5. PARALLAX IMAGES ---
-  const images = document.querySelectorAll(
-    "img:not(.team-modal__img):not(.empire-bg img):not(.portrait__img)"
-  );
-  images.forEach((img) => {
-    gsap.to(img, {
-      y: "10%",
-      ease: "none",
-      scrollTrigger: {
-        trigger: img.parentElement,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
+  // --- 5. PARALLAX IMAGES (Desktop Only) ---
+  mm.add("(min-width: 769px)", () => {
+    const images = document.querySelectorAll(
+      "img:not(.team-modal__img):not(.empire-bg img):not(.portrait__img)"
+    );
+    images.forEach((img) => {
+      gsap.to(img, {
+        y: "10%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: img.parentElement,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
     });
   });
 
   // --- 6. TEXT REVEALS (GENERAL) ---
-  const splitTypes = document.querySelectorAll(".reveal-type");
-  // Note: In a real scenario, we'd use SplitType library here.
-  // For this demo, we'll just fade in sections.
+  // Defer non-critical animations to reduce initial load time
+  setTimeout(() => {
+    const splitTypes = document.querySelectorAll(".reveal-type");
+    // Note: In a real scenario, we'd use SplitType library here.
+    // For this demo, we'll just fade in sections.
 
-  const sections = document.querySelectorAll("[data-scroll-section]");
-  sections.forEach((section) => {
-    gsap.fromTo(
-      section,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-        },
-      }
-    );
-  });
-
-  // --- 7. PROCESS STEPS HIGHLIGHT ---
-  const steps = document.querySelectorAll(".process__step");
-  steps.forEach((step) => {
-    gsap.to(step, {
-      x: 20,
-      scrollTrigger: {
-        trigger: step,
-        start: "top center",
-        end: "bottom center",
-        toggleClass: "active",
-        toggleActions: "play reverse play reverse",
-      },
+    const sections = document.querySelectorAll("[data-scroll-section]");
+    sections.forEach((section) => {
+      gsap.fromTo(
+        section,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+          },
+        }
+      );
     });
-  });
 
-  // --- 8. STATS COUNTER ---
-  const statVals = document.querySelectorAll(".stat-val");
-  statVals.forEach((stat) => {
-    const rawText = stat.textContent;
-    // Regex to separate prefix, number, suffix
-    // Matches: (non-digits)(digits)(non-digits)
-    const match = rawText.match(/^([^0-9]*)([0-9]+)(.*)$/);
-
-    if (match) {
-      const prefix = match[1] || "";
-      const targetVal = parseInt(match[2], 10);
-      const suffix = match[3] || "";
-
-      // Set initial value to 0 (preserving formatting)
-      stat.textContent = `${prefix}0${suffix}`;
-
-      const counter = { val: 0 };
-
-      gsap.to(counter, {
-        val: targetVal,
-        duration: 2,
-        ease: "power2.out",
+    // --- 7. PROCESS STEPS HIGHLIGHT ---
+    const steps = document.querySelectorAll(".process__step");
+    steps.forEach((step) => {
+      gsap.to(step, {
+        x: 20,
         scrollTrigger: {
-          trigger: stat,
-          start: "top 85%",
-          once: true, // Run only once
-        },
-        onUpdate: () => {
-          stat.textContent = `${prefix}${Math.floor(counter.val)}${suffix}`;
+          trigger: step,
+          start: "top center",
+          end: "bottom center",
+          toggleClass: "active",
+          toggleActions: "play reverse play reverse",
         },
       });
-    }
-  });
+    });
+
+    // --- 8. STATS COUNTER ---
+    const statVals = document.querySelectorAll(".stat-val");
+    statVals.forEach((stat) => {
+      const rawText = stat.textContent;
+      // Regex to separate prefix, number, suffix
+      // Matches: (non-digits)(digits)(non-digits)
+      const match = rawText.match(/^([^0-9]*)([0-9]+)(.*)$/);
+
+      if (match) {
+        const prefix = match[1] || "";
+        const targetVal = parseInt(match[2], 10);
+        const suffix = match[3] || "";
+
+        // Set initial value to 0 (preserving formatting)
+        stat.textContent = `${prefix}0${suffix}`;
+
+        const counter = { val: 0 };
+
+        gsap.to(counter, {
+          val: targetVal,
+          duration: 2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: stat,
+            start: "top 85%",
+            once: true, // Run only once
+          },
+          onUpdate: () => {
+            stat.textContent = `${prefix}${Math.floor(counter.val)}${suffix}`;
+          },
+        });
+      }
+    });
+  }, 100); // Short delay to unblock main thread
 
   // --- 9. MOBILE MENU TOGGLE & SCROLL ---
   const menuBtn = document.getElementById("menuBtn");
@@ -297,13 +310,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const testWrapper = document.getElementById("testimonialsWrapper");
 
   if (testSection && testWrapper) {
+    // Optimization
+    testWrapper.style.willChange = "transform";
+
     gsap.to(testWrapper, {
       x: () => -(testWrapper.scrollWidth - window.innerWidth),
       ease: "none",
       scrollTrigger: {
         trigger: testSection,
         start: "top top",
-        end: () => "+=1500",
+        end: () => "+=" + testWrapper.scrollWidth,
         scrub: 1,
         pin: true,
         invalidateOnRefresh: true,
